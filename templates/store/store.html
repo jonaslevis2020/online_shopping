@@ -160,7 +160,7 @@
 									</div> <!-- price-wrap.// -->
 								</div>
 								{% if p.stock > 0%}
-								<a href="#" class="btn  btn-primary">
+								<a href="{% url 'add_cart' p.id %}" class="btn  btn-primary">
 									<span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>
 								</a>
 								{% else %}
