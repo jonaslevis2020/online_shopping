@@ -1,3 +1,4 @@
+from tkinter.tix import Tree
 from colorama import Fore, Style, init
 from django.shortcuts import get_object_or_404, redirect, render
 from store.models import Product
@@ -18,6 +19,8 @@ def get_cart_id(request):
 
 def add_cart(request, product_id):
     product = Product.objects.get(id=product_id)
+    stock = product.stock
+    check_stock = False
     print(Style.BRIGHT+Fore.CYAN+'passed product id ==> '+Fore.YELLOW+f'{product_id}')
     print(Style.BRIGHT+Fore.CYAN+'real product id ==> '+Fore.YELLOW+f'{product.id}')
     try:
@@ -34,9 +37,20 @@ def add_cart(request, product_id):
         cart_item = CartItem.objects.create(product=product, quantity=1, cart=cart)
         cart_item.save()
         print(Style.BRIGHT+Fore.CYAN+'cart_item product id ==> '+Fore.YELLOW+f'{cart_item.product.id}')
-    # cart_item.quantity += 1
 
-    return redirect('cart')
+    if stock >= cart_item.quantity:
+        check_stock = True
+    if check_stock:
+        return redirect('cart')
+    else:
+        quantity = cart_item.quantity
+        context = {
+            'check_stock': check_stock,
+            'stock': stock,
+            'quantity': quantity,
+            'product':Product,
+        }
+        return render(request, 'store/stock_warning.html', context)
 
 
 def remove_cart(request, product_id):
@@ -50,8 +64,8 @@ def remove_cart(request, product_id):
         cart_item.save()
     else:
         cart_item.delete()
-    return redirect('cart')
 
+    return redirect('cart')
 
 def remove_cart_item(request, product_id):
     cart = Cart.objects.get(cart_id=get_cart_id(request))

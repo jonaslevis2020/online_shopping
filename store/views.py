@@ -1,8 +1,9 @@
-from unicodedata import category
-from django.shortcuts import get_list_or_404, get_object_or_404, render
+from cart.models import CartItem, Cart
+from cart.views import get_cart_id
+from category.models import Category
+from django.shortcuts import get_object_or_404, render
 
 from store.models import Product
-from category.models import Category
 
 # Create your views here.
 
@@ -25,10 +26,18 @@ def store(request, category_slug=None):
 
 
 def product_detail(request, category_slug, product_slug):
+    is_cart_item = False
     p = get_object_or_404(Product, slug=product_slug)
+    cart_id = get_cart_id(request)
+    cart = Cart.objects.filter(cart_id=cart_id)
+    cart_items = CartItem.objects.filter(cart=cart[0])
     category_slug = category_slug
+    for item in cart_items:
+        if item.product.id == p.id:
+            is_cart_item = True
     context = {
         'p': p,
         'category_slug': category_slug,
+        'is_cart_item': is_cart_item,
         }
     return render(request, 'store/product_detail.html', context)

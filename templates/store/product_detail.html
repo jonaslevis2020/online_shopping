@@ -12,7 +12,7 @@
 					<aside class="col-md-6">
 			<article class="gallery-wrap">
 				<div class="img-big-wrap">
-				<a href="{{p.product_image.url}}"><img src="{{p.product_image.url}}"></a>
+				<a href="{{p.product_image.url}}"><img class='img-fluid' src="{{p.product_image.url}}"></a>
 				</div> <!-- img-big-wrap.// -->
 
 			</article> <!-- gallery-wrap .end// -->
@@ -70,9 +70,20 @@
 				</div> <!-- row.// -->
 				<hr>
 				{% if p.stock > 0 %}
-					<a href="{% url 'add_cart' p.id %}" class="btn  btn-primary">
-						<span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>
-					</a>
+					{% if is_cart_item  %}
+					<div class="row justify-content-around">
+						<button class="btn btn-success" disabled>
+							Added to cart <i class="fas fa-check    "></i>
+						</button>
+						<a href='{% url 'cart' %}' class="btn btn-outline-primary">
+							View in cart  <i class="fas fa-eye px-2"></i>
+						</a>
+					</div>
+					{% else %}
+						<a href="{% url 'add_cart' p.id %}" class="btn  btn-primary">
+							<span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>
+						</a>
+					{% endif %}
 				{% else %}
 					<div class="alert alert-danger" role="alert">
 						<strong>This product is out of stock!</strong>

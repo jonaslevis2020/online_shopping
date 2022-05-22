@@ -155,6 +155,9 @@
 							<figcaption class="info-wrap">
 								<div class="fix-height">
 									<a href="{{p.get_url}}" class="title">{{p.product_name}}</a>
+									{% if p.stock >= 0 %}
+										<label for="">Stock: {{p.stock}}</label>
+									{% endif %}
 									<div class="price-wrap mt-2">
 										<span class="price">$ {{p.price}}</span>
 									</div> <!-- price-wrap.// -->
