@@ -7,6 +7,8 @@ def get_cart_items(request):
     cart_id = get_cart_id(request)
     print(f'cart_id ===> {cart_id}')
     cart = Cart.objects.filter(cart_id=cart_id)
-    cart_items = CartItem.objects.all().filter(cart=cart[0])
-    cart_items_count = cart_items.count()
-    return {'cart_items_count': cart_items_count}
+    cart_items = CartItem.objects.all().filter(cart=cart[:1])
+    quantity = 0
+    for item in cart_items:
+        quantity += item.quantity
+    return {'cart_items_count': quantity}

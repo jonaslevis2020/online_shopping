@@ -21,8 +21,8 @@ def add_cart(request, product_id):
     product = Product.objects.get(id=product_id)
     stock = product.stock
     check_stock = False
-    print(Style.BRIGHT+Fore.CYAN+'passed product id ==> '+Fore.YELLOW+f'{product_id}')
-    print(Style.BRIGHT+Fore.CYAN+'real product id ==> '+Fore.YELLOW+f'{product.id}')
+    print(Style.BRIGHT+Fore.CYAN+f'passed product id ==> '+Fore.YELLOW+f'{product_id}')
+    print(Style.BRIGHT+Fore.CYAN+f'real product id ==> '+Fore.YELLOW+f'{product.id}')
     try:
         cart = Cart.objects.get(cart_id=get_cart_id(request))
     except Cart.DoesNotExist:
@@ -81,8 +81,11 @@ def remove_cart_item(request, product_id):
 def get_cart(request):
     total = 0
     quantity = 0
-    cart_items = ''
+    cart_items = []
     items_count = 0
+    tax = 0
+    grand_total = 0
+    context = {}
     try:
         cart = Cart.objects.get(cart_id=get_cart_id(request))
         cart_items = CartItem.objects.filter(cart=cart, is_active=True)

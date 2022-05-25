@@ -4,7 +4,11 @@
 <!-- ========================= SECTION PAGETOP ========================= -->
 <section class="section-pagetop bg">
 	<div class="container">
-		<h2 class="title-page">Our Store</h2>
+		{% if 'search' in request.path %}
+			<h2 class="title-page">Search Results</h2>
+		{% else %}
+			<h2 class="title-page">Our Store</h2>
+		{% endif %}
 
 	</div> <!-- container //  -->
 </section>
@@ -156,15 +160,15 @@
 								<div class="fix-height">
 									<a href="{{p.get_url}}" class="title">{{p.product_name}}</a>
 									{% if p.stock >= 0 %}
-										<label for="">Stock: {{p.stock}}</label>
+										<label for="" class="text-success">Stock: {{p.stock}}</label>
 									{% endif %}
 									<div class="price-wrap mt-2">
 										<span class="price">$ {{p.price}}</span>
 									</div> <!-- price-wrap.// -->
 								</div>
 								{% if p.stock > 0%}
-								<a href="{% url 'add_cart' p.id %}" class="btn  btn-primary">
-									<span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>
+								<a href="{{p.get_url}}" class="btn  btn-outline-primary">
+									<span class="text">View details</span>
 								</a>
 								{% else %}
 								<div class="alert alert-danger" role="alert">
@@ -179,13 +183,23 @@
 
 
 				<nav class="mt-4" aria-label="Page navigation sample">
-					<ul class="pagination">
-						<li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-						<li class="page-item active"><a class="page-link" href="#">1</a></li>
-						<li class="page-item"><a class="page-link" href="#">2</a></li>
-						<li class="page-item"><a class="page-link" href="#">3</a></li>
-						<li class="page-item"><a class="page-link" href="#">Next</a></li>
-					</ul>
+					{% if products.has_other_pages %}
+						<ul class="pagination">
+							{% if products.has_previous %}
+								<li class="page-item "><a class="page-link" href="?page={{products.previous_page_number}}">Previous</a></li>
+							{% else %}
+								<li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+							{% endif %}
+							{% for i in products.paginator.page_range %}
+								<li class="page-item {% if products.number == i %}active{% endif %}"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+							{% endfor %}
+							{% if products.has_next %}
+								<li class="page-item "><a class="page-link" href="?page={{products.next_page_number}}">Next</a></li>
+							{% else %}
+								<li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+							{% endif %}
+						</ul>
+					{% endif %}
 				</nav>
 
 			</main> <!-- col.// -->
