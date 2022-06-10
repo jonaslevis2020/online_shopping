@@ -1,6 +1,7 @@
-from tkinter.tix import Tree
 from colorama import Fore, Style, init
 from django.shortcuts import get_object_or_404, redirect, render
+from regex import F
+from store.models import Variation
 from store.models import Product
 
 from cart.models import Cart, CartItem
@@ -19,6 +20,19 @@ def get_cart_id(request):
 
 def add_cart(request, product_id):
     product = Product.objects.get(id=product_id)
+    product_variations = []
+    if request.method == 'POST':
+        print(Style.BRIGHT+Fore.GREEN+f'Request: {request.POST}')
+        for key in request.POST:
+            value = request.POST[key]
+            print(Style.BRIGHT+Fore.RED+f'{key}:'+Fore.MAGENTA+f'{value}')
+            try:
+                variation = Variation.objects.get(product=product, variation_category__iexact=key, variation_value__iexact=value)
+                product_variations.append(variation)
+                print(Style.BRIGHT+Fore.LIGHTMAGENTA_EX+F'Variations: {product_variations}')
+            except Exception as e:
+                for arg in e.args:
+                    print(Style.BRIGHT+Fore.RED+f'{arg}')
     stock = product.stock
     check_stock = False
     print(Style.BRIGHT+Fore.CYAN+f'passed product id ==> '+Fore.YELLOW+f'{product_id}')
@@ -66,6 +80,7 @@ def remove_cart(request, product_id):
         cart_item.delete()
 
     return redirect('cart')
+
 
 def remove_cart_item(request, product_id):
     cart = Cart.objects.get(cart_id=get_cart_id(request))

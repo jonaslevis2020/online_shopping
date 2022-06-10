@@ -6,9 +6,12 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from colorama import init, Style, Fore
 from store.models import Product
 from django.db.models import Q
+from colorama import init, Style, Fore
 
 # Create your views here.
 
+
+init(autoreset=True)
 
 def store(request, category_slug=None):
     products = ''
@@ -61,11 +64,11 @@ def search(request):
     print(Style.BRIGHT+Fore.MAGENTA+f'keyword: {kw}')
     # if kw:
     products = Product.objects.all().filter(Q(product_name__icontains=kw) | Q(description__icontains=kw))
-    paginator = Paginator(products, 2)
-    page = request.GET.get('page')
-    paged_products = paginator.get_page(page)
+    # paginator = Paginator(products, 10)
+    # page = request.GET.get('page')
+    # paged_products = paginator.get_page(page)
     context = {
-        'products': paged_products,
+        'products': products,
         'total': products.count(),
         'keyword': kw,
     }
